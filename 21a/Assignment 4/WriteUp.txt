@@ -1,0 +1,83 @@
+## 1. Maximum Member in a List
+
+    func RMV(greatestSoFar, list) -> greatestNumber {
+      greatestSoFar = 0
+      RMVTail(greatestSoFar, list, list.first.valueOfItem)
+    }
+    
+    func RMVTail(greatestSoFar, list, nextItem) -> greatestNumber {
+      
+      nextItem = list.next
+      if (nextItem = nil) {
+        return greatestSoFar
+      } else {
+        if (nextItem > greatestSoFar) {
+          greatestSoFar = nextItem
+        }
+        
+        RMVTail(greatestSoFar, list, nextItem.valueOfItem)
+      }
+    }
+
+### A. Analysis ###
+
+Time: O(n), where n is list size. The algorithm has to go through the entire list to find the maximum value, so operating time depends on the list.
+
+Space: O(1). Beyond a given instance, only the variables in each call are stored. A smart compiler would be able to return the greatest number to the original call, not each previous call, removing the need to keep a large stack of return address. In addition, the list itself (and by extensions, it's members) wouldn't be passed into the list, only the pointers to each.
+
+### B. Proof by Induction ###
+
+Assumption: no member of a list is nil.
+
+Base case: a list of one member is fed. Since the first item is not nil, The function `RMVTail()` finds the first number, and sets that as the greatest so far, and calls itself. The second time around, next item pointer is nil, so the function returns `greatestSoFar`.
+
+Inductive Case: Let's assume that this code works for an arbitrary list —  *A* — of items of size *x > 1*. Because the code is not dependent on list size, that would work. But say a second list — *B* — is attached to *A*, the algorithm will function the same way, as it doesn't matter what the size is. Therefore, this algorithm works for every case.
+
+## 2. Binary Search Space
+
+The algorithm runs in constant space. Beyond a given instance of a function of a long recursive call, not much exists beyond the return address of a the calling method (which a smart compiler can optimize to the original call). The instance variables of previous calls aren't relevant, as only the current, recalculated variables are.
+
+## 3. Towers of Hanoi: Recursive vs. Iterative ##
+
+Recursive: 
+      
+    procedure TOWER(n,x,y,z) 
+      if n > 0 then begin
+        TOWER(n–1,x,z,y)
+        write "Move ring n from x to y."
+        TOWER(n–1,z,y,x)
+      end
+    end
+
+The algorithm runs in S(n) + 4 (S is space), as the ring positions are implicitly stored in the recursive call, as represented by the `+ 4`. Most of the memory is allocated to the recursive stack. However, if n is 1, the algorithm uses a space of 5.
+
+Iterative:
+
+    if n is odd 
+      d := clockwise 
+    else 
+      d := counterclockwise
+    
+    repeat
+        Move the smallest ring one post in direction d.
+        Make the only legal move that does not involve the smallest ring. until all rings are on the same post
+        
+The algorithm runs in S(n) + 1 time, as only one memory operation per disk movement is used. The iterative algorithm uses slightly less memory than the recursive algorithm.m
+
+## 4. Tree Analysis ##
+
+Algorithm: `2^h+1 - 1`
+
+### Base case:
+
+For when `h is 0`, the function results in 1, as 2^(0 + 1) -1 = 2 - 1 = 1.
+
+### Induction:
+
+Let's say for `n - 1 > 0`, the equation works. In other words, the equation works on 2^((n - 1) + 1) - 1. It would therefore execute the same instructions for 2*(n + 1) - 1.
+
+An equation showing the follow is below:
+
+`x = (2^((n - 1) + 1) - 1) + 2^n = 2 * 2^(n + 1) - 1 = 2^(n + 1) - 1`
+
+Therefore, it works.
