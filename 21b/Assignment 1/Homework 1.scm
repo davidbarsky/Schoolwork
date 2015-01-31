@@ -1,4 +1,10 @@
+; for exercises
+
+(define (1+ x) (+ 1 x))
+
+; ----
 ; 1.17
+; ----
 
 (define (square x)
   (* x x))
@@ -19,12 +25,58 @@
 
 (fast-exponent 2 3)
 
+; ----
 ; 1.34
+; ----
 
 (define (f g) (g 2))
 
 (f square)
 
-(f (lambda (z) (* z (+ z 1))))
+(f 
+ (lambda (z) 
+   (* z (+ z 1))))
 
-(f f)
+; (f f)
+
+; the interpretor tries to apply the function to itself, but fails, as there
+; is no valid input to the function.
+
+; ----
+; 1.43
+; ----
+
+; background
+(define (square x) (* x x))
+(define (compose f g)
+  (lambda (x) (f (g x))))
+
+; solution
+(define (repeat f n) 
+  (if (< n 1) 
+    (lambda (x) x) 
+    (compose f (repeat f (- n 1))))) 
+
+; ----
+; 1.44
+; ----
+
+; -----------------
+; Function Doubling
+; -----------------
+
+(define (double fn)
+  (lambda (x) (fn (fn x))))
+
+((double 1+) 0)
+(((double double) 1+) 0)
+((((double double) double) 1+) 0)
+(((((double double) double) double)1+) 0)
+((((((double double) double) double) double) 1+) 0)
+
+; This is an ackerman function — the output growth can be modeled as tetration, or
+; itererated exponentiation. The function grows to incomputable levels.
+
+
+
+

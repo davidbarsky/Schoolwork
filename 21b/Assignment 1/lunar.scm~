@@ -43,7 +43,7 @@
 (define (initial-ship-state)
   (make-ship-state 50       ; 50 km high
                    0        ; not moving (0 km/sec)
-                   20))     ; 20 kg of fuel left
+                   2))     ; 20 kg of fuel left
 
 (define dt 1)               ; 1 second interval of simulation
   
@@ -124,28 +124,15 @@
 ; Problem 2
 ; ---------
 
-; definitions from problem 1
 (define (full-burn ship-state) 1)
 (define (no-burn ship-state) 0)
-(define (ask-user ship-state) (get-burn-rate))
 
-(define (play player-input)
-  (if (eq? (player-input initial-ship-state) (full-burn initial-ship-state))
-      (lander-loop (update initial-ship-state (full-burn initial-ship-state)))
-      (lander-loop (initial-ship-state))))
+(define (play ask-user) (lander-loop (initial-ship-state)))
 
 (define (lander-loop ship-state)
   (show-ship-state ship-state)
   (if (landed? ship-state)
       (end-game ship-state)
-        (lander-loop (update ship-state (get-burn-rate)))))
-      
-; ---------
-; Problem 3
-; ---------
+      (lander-loop (update ship-state (get-burn-rate)))))
 
-(define (random-choice ship-state)
-  (lambda (ship-state)
-    (if (= (random 2) 0)
-      (full-burn ship-state)
-      (no-burn ship-state))))
+(define (ask-user ship-state) (get-burn-rate))
