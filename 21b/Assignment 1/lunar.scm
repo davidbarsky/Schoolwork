@@ -134,6 +134,8 @@
       (lander-loop (update initial-ship-state (full-burn initial-ship-state)))
       (lander-loop (initial-ship-state))))
 
+; BUG: full-burn causes a contract violation
+
 (define (lander-loop ship-state)
   (show-ship-state ship-state)
   (if (landed? ship-state)
@@ -144,8 +146,12 @@
 ; Problem 3
 ; ---------
 
-(define (random-choice ship-state)
+(define (random-choice state-1 state-2)
   (lambda (ship-state)
     (if (= (random 2) 0)
       (full-burn ship-state)
       (no-burn ship-state))))
+
+; ---------
+; Problem 4
+; ---------
