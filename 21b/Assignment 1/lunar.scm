@@ -129,12 +129,13 @@
 (define (no-burn ship-state) 0)
 (define (ask-user ship-state) (get-burn-rate))
 
+; jury rigged, doesn't respond as it should.
 (define (play player-input)
-  (if (eq? (player-input initial-ship-state) (full-burn initial-ship-state))
-      (lander-loop (update initial-ship-state (full-burn initial-ship-state)))
+  (if (= (player-input initial-ship-state) (full-burn initial-ship-state))
+      (lander-loop (initial-ship-state))
       (lander-loop (initial-ship-state))))
 
-; BUG: full-burn causes a contract violation
+; BUG: full-burn and ask-user causes a contract violation
 
 (define (lander-loop ship-state)
   (show-ship-state ship-state)
@@ -155,3 +156,56 @@
 ; ---------
 ; Problem 4
 ; ---------
+
+(define (height-choice strategy-1 strategy-2 height)
+  (if (> height 30)
+      (play strategy-1)
+      (play strategy-2)))
+
+; ---------
+; Problem 5
+; ---------
+
+; has error, no body.
+(define (choice strategy-1 strategy-2) (stategy-1))
+
+(define (random-choice strategy-1 strategy-2)
+  (choice strategy-1
+          strategy-2
+          (lamdba (ship-state) (= (random 2) 0))))
+ 
+(define (height-choice strategy-1 strategy-2 height)
+  (choice strategy-1
+          strategy-2
+          (lamdba (ship-state) (if (> height 30)
+                                   (play strategy-1)
+                                   (play strategy-2)))))
+
+; ---------
+; Problem 6
+; ---------
+
+(define (pester-player ship-state)
+  (if (> (height ship-state) 40)
+      (play no-burn)
+      (if (= (random 2) 0)
+          (play full-burn)
+          (play ask-user))))
+
+; ---------
+; Problem 7
+; ---------
+
+; downwards velocity has to be cancled out the propulsion. to reach zero from any
+; height, a minumum bit of acelloration has to be applied to slow down. It can be
+; calculated using the given formula.
+
+; ---------
+; Problem 8
+; ---------
+
+; helper
+(define (square x) (* x x))
+
+(define (constant-acc ship-state)
+  (/ (square (velocity ship-state)) (* 2 (ship-state height))))

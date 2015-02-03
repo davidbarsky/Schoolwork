@@ -61,6 +61,18 @@
 ; 1.44
 ; ----
 
+(define dx 0.00001) 
+  
+(define (smooth f) 
+  (lambda (x) 
+    (/ (+ (f (- x dx)) 
+      (f x) 
+      (f (+ x dx))) 
+    3))) 
+  
+(define (n-fold-smooth f n) 
+  ((repeated smooth n) f)) 
+
 ; -----------------
 ; Function Doubling
 ; -----------------
@@ -76,7 +88,3 @@
 
 ; This is an ackerman function — the output growth can be modeled as tetration, or
 ; itererated exponentiation. The function grows to incomputable levels.
-
-
-
-
