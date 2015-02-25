@@ -87,3 +87,137 @@
 
 ;;******
 
+
+;-----------------------------
+; Homework Problems Start Here
+;-----------------------------
+
+
+;----------
+; Problem 1
+;----------
+
+; picks qualifier. just a larger list.
+(define (qualifier)
+  (pick-random '((you seem to think)
+                 (you feel that)
+                 (why do you feel that way)
+                 (you believe that)
+                 (why do you believe)
+                 (why do you say))))
+
+; picks hedge. just a larger list.
+(define (hedge)
+  (pick-random '((please go on)
+                 (you are not alone in thinking this)
+                 (continue)
+                 (many people have the same sorts of feelings)
+                 (many of my patients have told me the same thing)
+                 (please continue))))
+
+;----------
+; Problem 2
+;----------
+
+; the modified 
+(define (change-person phrase)
+  (many-replace '((you i) (are am) (your my) (i you) (me you) (am are) (my your))
+                phrase))
+
+; helper for new many-replace
+(define (map fn items)
+  (if (null? items)
+      '()
+      (cons (fn (car items))
+            (map fn (cdr items)))))
+
+(define (replace pattern replacement lst)
+  (cond ((null? lst) '())
+        ((equal? (car lst) pattern)
+           (cons replacement
+                 (replace pattern replacement (cdr lst))))
+        (else (cons (car lst)
+              (replace pattern replacement (cdr lst))))))
+
+(define (many-replace replacement-pairs lst)
+  (cond ((null? replacement-pairs) lst)
+         (else (let ((pat-rep (car replacement-pairs)))
+            (replace (car pat-rep)
+                     (cadr pat-rep)
+                     (many-replace (cdr replacement-pairs)
+                     lst))))))
+
+
+; See Report.md for questions in problem set
+
+;----------
+; Problem 3
+;----------
+
+; for adding to items
+(define (tack x L)
+  (if (null? L)
+      (list x)
+      (cons (car L) (tack x (cdr L)))))
+
+; initializes past responses list
+(define (visit-doctor name)
+  (write-line (list 'hello name))
+  (write-line '(what seems to be the trouble?))
+  (define past-responses (list))
+  (doctor-driver-loop name past-responses))
+
+; adds user-responses to past-responses
+(define (doctor-driver-loop name past-responses)
+  (newline)
+  (write '**)
+  (let ((user-response (read)))
+    (cond ((equal? user-response '(goodbye))
+             (write-line (list 'goodbye name))
+             (write-line '(see you next week)))
+          (else (write-line (reply user-response past-responses))
+                (write-line past-responses)
+                (doctor-driver-loop name (tack user-response past-responses))))))
+
+; reply hanlding
+(define (reply user-response past-responses)
+  (cond ((fifty-fifty)
+        (cond (fifty-fifty)
+              (append (qualifier)
+                      (change-person user-response)))
+              (if (null? past-responses)
+                  (append (qualifier) 
+                          (change-person user-response)) ; normal flow, dicated by user
+                  (append '(earlier you said that)
+                          (change-person (pick-random past-responses))))) ; gets random past-response
+                 
+        (else (hedge))))
+
+;----------
+; Problem 4
+;----------
+
+; adds user-responses to past-responses
+(define (doctor-driver-loop name past-responses)
+  (newline)
+  (write '**)
+  (let ((user-response (read)))
+    (cond ((equal? user-response '(goodbye)) ; if goodbye, asks the next patient's name, and passes it to visit-doctor.
+             (write-line (list 'goodbye name))
+             (write-line '(see you next week))
+             (write-line '(who are you))
+             (write '**) ; for consistency in formatting user replies
+             (visit-doctor (read))) ; has side benefit of clearing '(past-responses)
+                       
+          (else (write-line (reply user-response past-responses)) ; otherwise, it continues the therapy sessions
+                (doctor-driver-loop name (tack user-response past-responses))))))
+                 
+; if the patient says "goodbye", this starting method gets called.
+(define (visit-doctor name)
+  (define past-responses (list))
+  (cond ((equal? name '(suppertime))
+      (write-line '(quitting time))) ; it also just happens to *end* the psychiatrist's day.
+  
+  (else (write-line (list 'hello name)) ; but if the day isn't over, the next patient 
+        (write-line '(what seems to be the trouble?))
+        (doctor-driver-loop name past-responses))))
