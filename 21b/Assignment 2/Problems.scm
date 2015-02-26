@@ -41,7 +41,7 @@
      (if (null? things)
          answer ; base case
          (iter (cdr things)
-               (append answer 
+               (append answer
                        (list (square (car things))))))) ; cdr down the list
    (iter items '()))
 
@@ -57,7 +57,7 @@
 
 ; you have *got* to be kidding me
 (define list3 (list 1 (list 2 (list 3 (list 4 (list 5 (list 6 7)))))))
-(car (cdr (car (cdr (car (cdr (car (cdr (car (cdr (car (cdr list3)))))))))))) ; parking lot
+(car (cdr (car (cdr (car (cdr (car (cdr (car (cdr (car (cdr list3)))))))))))) ; parking lot [get it?]
 
 
 ; Exercise 2.26: comparing cons, list, and append.
@@ -88,11 +88,11 @@
       list2
       (cons (car list1) (append (cdr list1) list2))))
 
-; the deep-reverse procedure. a list member is pair, the procedure 
+; the deep-reverse procedure. a list member is pair, the procedure
 ; calls itself until it reaches the base case, which is when the
 ; list member doesn't contain any *other* list members
 (define (deep-reverse items)
-  (cond ((null? items) 
+  (cond ((null? items)
          '())
          ((pair? (car items))
                  (append (deep-reverse (cdr items))

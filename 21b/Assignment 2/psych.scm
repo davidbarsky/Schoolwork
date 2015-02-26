@@ -119,7 +119,7 @@
 ; Problem 2
 ;----------
 
-; the modified 
+; the modified change-person procedure
 (define (change-person phrase)
   (many-replace '((you i) (are am) (your my) (i you) (me you) (am are) (my your))
                 phrase))
@@ -146,6 +146,7 @@
                      (cadr pat-rep)
                      (many-replace (cdr replacement-pairs)
                      lst))))))
+
 
 
 ; See Report.md for questions in problem set
@@ -178,12 +179,18 @@
           (else (write-line (reply user-response past-responses))
                 (write-line past-responses)
                 (doctor-driver-loop name (tack user-response past-responses))))))
+                ; regarding last line: there's no need to mutate past-responses, as the new version is
+                ; is recursivly passed. pretty clever, I think.
+
+; used to make the program less likely to use the (earlier you said that thing) 
+(define (pretty-unlikely)
+  (= (random 10) 0))
 
 ; reply hanlding
 (define (reply user-response past-responses)
   (cond ((fifty-fifty)
-        (cond (fifty-fifty)
-              (append (qualifier)
+        (cond (not (pretty-unlikely)) ; weird logic to make the past-responses not be called so frequently.
+              (append (qualifier)     ; it's a last minute band-aid.
                       (change-person user-response)))
               (if (null? past-responses)
                   (append (qualifier) 

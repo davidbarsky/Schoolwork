@@ -20,8 +20,8 @@ Basically, pronouns are being double-replaced. I'm considering using a map opera
 
 ### Problem 3
 
-I want to document how the list `past-respones` is handled by the program loop. It is initially created in the procedure `(visit-doctor)`, and is passed through every iteration of the `(doctor-driver-loop)`. When the procedure `(reply)` is called, `past-responses` is passed to the `(reply)` method. 25% of the time, the `(reply)` method gets a past response of the user.
+I want to document how the list `past-respones` is handled by the program loop. It is initially created in the procedure `(visit-doctor)`, and is passed through every iteration of the `(doctor-driver-loop)`. When the procedure `(reply)` is called, `past-responses` is passed to the `(reply)` method. 12.5% of the time, the `(reply)` method gets a past response of the user.
 
 ## Problem 4
 
-I chose to modify both the `(doctor-driver-loop)` and the `(visit-doctor)` procedures in order to implement an end condition (reached when the user enters `(suppertime)` when the doctor program asks, `(who are you)`). Initially, I chose to modify the `(doctor-driver-loop)` exclusively, but doing so made the `(doctor-driver-loop)` program too unwieldy, with far too many nested conditional statements. Instead, I chose to use `(visit-doctor)` as the procedure that handled entering and exiting the doctor loop. That is, if the patient's name is `suppertime`, the program terminates. Otherwise, it “sees” the next patient
+I chose to modify both the `(doctor-driver-loop)` and the `(visit-doctor)` procedures in order to implement an end condition (reached when the user enters `(suppertime)` when the doctor program asks, `(who are you)`). Initially, I chose to modify the `(doctor-driver-loop)` exclusively, but doing so made the `(doctor-driver-loop)` program too unwieldy, with far too many nested conditional statements. Instead, I chose to use `(visit-doctor)` as the procedure that handled entering and exiting the doctor loop. That is, if the patient's name is `suppertime`, the program terminates. Otherwise, it “sees” the next patient.
