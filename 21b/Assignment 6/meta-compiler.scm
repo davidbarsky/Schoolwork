@@ -214,8 +214,8 @@
    (cons car cdr null? pair? zero? true false - * + = < 1+)))
 
 (define (make-count name)
-  (let ((binding-count -1)
-        (frame-count -1))
+  (let ((binding-count 0)
+        (frame-count 0))
     (define (me message)
       (cond ((eq? message 'binding-count) binding-count)
             
@@ -229,11 +229,11 @@
             
             ; resets
             ((eq? message 'reset-binding-count)
-             (set! binding-count -1))
+             (set! binding-count 0))
 
             ((eq? message 'reset)
-             (set! binding-count -1)
-             (set! frame-count -1))
+             (set! binding-count 0)
+             (set! frame-count 0))
             
             (else
              (error "bad message"))))
@@ -243,27 +243,28 @@
 
 ; frames
 (define (traverse-frames goal L)
-  (count 'increase-frame-count)
   (count 'reset-binding-count)
   (if (null? L)
       '(empty-frame!)
       (if (equal? (traverse-bindings goal (car L)) '(found-it!))
           (list (count 'frame-count) (count 'binding-count))
-          (traverse-frames goal (cdr L)))))
+          (begin
+              (count 'increase-frame-count)
+              (traverse-frames goal (cdr L))))))
 
 ; bindings
 (define (traverse-bindings goal L)
   (if (null? L)
       '(empty-bindings!)
       (begin
-        (count 'increase-binding-count)
         (if (equal? goal (car L))
             '(found-it!)
-             (traverse-bindings goal (cdr L))))))
+            (begin
+              (count 'increase-binding-count)
+              (traverse-bindings goal (cdr L)))))))
 
 (define (lookup-variable v env-names)
-  (begin
-    (count 'reset))
+  (count 'reset)
   (if (null? env-names)
       (error "env-names is empty!")
       (traverse-frames v env-names)))
@@ -274,11 +275,51 @@
 (define (count-binding number)
   (1+ number))
 
-(define (fetch env-values a)
+(define fetch-count (make-count 'Fetch-Count))
+
+(define (fetch env-values location)
+  (fetch-count 'reset)
   (if (null? env-values)
-      a
-      (if (eq? a (car env-values))
-        (car env-values)
-        (begin
-          (write-line a)
-          (fetch (cdr env-values) a)))))
+      (error "value not found!")
+      (traverse-value-frames env-values location)))
+      
+(define (traverse-value-frames env-values location)
+  (if (null? env-values)
+      '(empty-frame!)
+       (if (equal? (car location) (fetch-count 'frame-count))
+           (begin
+             (fetch-count 'increase-frame-count)
+             (traverse-value-bindings (car env-values) location))
+           (begin
+             (fetch-count 'increase-frame-count)
+             (traverse-value-frames (cdr env-values) location)))))
+
+(define (traverse-value-bindings env-values location)
+  (if (null? env-values)
+      '(empty-bindings!)
+      (if (eq? (cadr location) (fetch-count 'binding-count))
+          (car env-values)
+          (begin
+            (fetch-count 'increase-binding-count)
+            (traverse-value-bindings (cdr env-values) location)))))
+
+;; ---------
+;; Problem 2
+;; --------- 
+
+;; declarations
+(define test1
+  '(letrec
+       ((neg (lambda (x) (- 1 x)))
+        (square (lambda (x) (* x x)))
+        (fun (lambda (a b) (neg (+ (square a) (square b))))))
+     (fun (fun 10 20) 30)))
+
+(define test2
+  '(letrec
+       ((odd (lambda (n) (if (= n 0) 0 (even (- n 1)))))
+        (even (lambda (n) (if (= n 0) 1 (odd (- n 1))))))
+     (even 11)))
+
+(define (compile-lambda))
+  
