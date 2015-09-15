@@ -1,3 +1,5 @@
+Note: realized I submitted the form in markdown format, not PDF. Eden Zik gave the OK to resubmit.
+
 # Report
 
 ## SICP Question

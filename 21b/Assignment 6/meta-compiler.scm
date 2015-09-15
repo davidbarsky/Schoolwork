@@ -213,6 +213,7 @@
    (s p q r)
    (cons car cdr null? pair? zero? true false - * + = < 1+)))
 
+; in retrospect, this is a *bad* idea, and is convoluted.
 (define (make-count name)
   (let ((binding-count 0)
         (frame-count 0))
@@ -321,5 +322,5 @@
         (even (lambda (n) (if (= n 0) 1 (odd (- n 1))))))
      (even 11)))
 
-(define (compile-lambda))
+(define (compile-lambda binders exp env-names))
   
